@@ -15,11 +15,25 @@ connect_db(app)
 
 
 @app.get('/')
+def redirect_to_user_list():
+    """Redirect to User List"""
+
+    return redirect('/users')
+
+
+@app.get('/users')
 def list_users():
     """List users and show form to add user"""
 
     users = User.query.all()
     return render_template("list.html", users=users)
+
+
+@app.get('/users/new')
+def show_add_form():
+    """Displays form to add a user"""
+
+    return render_template("add_user_form.html")
 
 
 @app.post('/users/new')
@@ -38,14 +52,27 @@ def add_user():
     return redirect(f'/users/{user.id}')
 
 
-@app.get('/<int:user_id>')
+@app.get('/users/<int:user_id>')
 def show_user(user_id):
     """Display info on a single user"""
 
     user = User.query.get_or_404(user_id)
-    return render_template("detail.html", user=user)
+    return render_template("user_info.html", user=user)
 
 
-@app.get('/users/new')
-def show_form():
-    return render_template("new_user_form.html")
+@app.get('/users/<int:user_id>/edit')
+def display_edit_form(user_id):
+    """Display the form to edit a user's info"""
+
+    user = User.query.get_or_404(user_id)
+    return render_template("edit_user.html", user=user)
+
+
+@app.post('/users/<int:user_id>/edit')
+def process_edits():
+    """Process edits on edit form and return user to users page"""
+
+
+@app.post('/users/<int:user_id>/delete')
+def delete_user():
+    """Delete's the user being displayed"""
