@@ -69,10 +69,25 @@ def display_edit_form(user_id):
 
 
 @app.post('/users/<int:user_id>/edit')
-def process_edits():
+def process_edits(user_id):
     """Process edits on edit form and return user to users page"""
+    user = User.query.get_or_404(user_id)
+
+    user.first_name = request.form['first_name']
+    user.last_name = request.form['last_name']
+    user.image_url = request.form['image_url']
+
+    db.session.commit()
+
+    return redirect('/users')
 
 
 @app.post('/users/<int:user_id>/delete')
-def delete_user():
+def delete_user(user_id):
     """Delete's the user being displayed"""
+    user = User.query.get_or_404(user_id)
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect('/users')

@@ -2,16 +2,16 @@
 {% block title %}Users{% endblock %}
 
 
-    {% block header %}
-      <h1>Users</h1>
-    {% endblock %}
+{% block header %}
+<h1>Users</h1>
+{% endblock %}
 
 {% block content%}
-  <ul>
-    {% for user in users %}
-    <li><a href="/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a></li>
-    {% endfor %}
-  </ul>
+<ul>
+  {% for user in users %}
+  <li><a href="/users/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a></li>
+  {% endfor %}
+</ul>
 
-  <button><a href="/users/new">Add user</a></button>
+<button><a href="/users/new">Add user</a></button>
 {% endblock %}

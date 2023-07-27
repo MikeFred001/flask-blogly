@@ -4,15 +4,17 @@
 
 
 {% block header %}
-  <h1>User Info</h1>
+<h1>User Info</h1>
 {% endblock %}
 
 
 {% block content %}
-  <img src="{{ user.image_url }}" alt="Profile Image">
+<img src="{{ user.image_url }}" alt="Profile Image">
 
-    <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+<h1>{{ user.first_name }} {{ user.last_name }}</h1>
 
-  <button><a>Delete</a></button>
-  <button><a href="">Edit</a></button>
+<form action="/users/{{user.id}}/delete" method="POST">
+  <button class="btn btn-danger">Delete</button>
+</form>
+<button><a href="/users/{{user.id}}/edit">Edit</a></button>
 {% endblock %}
