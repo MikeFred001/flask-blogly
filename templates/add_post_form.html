@@ -2,11 +2,12 @@
 {% block title%}Create a user{% endblock %}
 
 {% block header %}
-<h1>Add post for {{user.first_name}} {{user.last_name}}</h1>
+  <h1>Add post for {{user.first_name}} {{user.last_name}}</h1>
 {% endblock %}
 
 {% block content%}
 <form method="POST" action="/users/{{user.id}}/posts/new">
+  <!-- Test for add post form -->
 
   <label for="post_title">Title</label>
   <input id="post_title" name="post_title">
