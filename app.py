@@ -3,8 +3,8 @@
 import os
 
 from flask import Flask, request, render_template, redirect
-from models import connect_db, db, User
-#debug toolbar
+from models import connect_db, db, User, Post
+# debug toolbar
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL", 'postgresql:///blogly')
@@ -98,3 +98,28 @@ def delete_user(user_id):
     db.session.commit()
 
     return redirect('/users')
+
+
+@app.get('/users/<int:user_id>/posts/new')
+def display_add_post_form(user_id):
+    """Displays add post form to add a post"""
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template("add_post_form.html", user=user)
+
+
+@app.post('/users/<int:user_id>/posts/new')
+def handle_add_post_form(user_id):
+    """Handle form to add a post"""
+    user = User.query.get_or_404(user_id)
+
+    new_post = Post(
+        title=request.form['post_title'],
+        content=request.form['post_content']
+    )
+
+    user.posts.append(new_post)
+    db.session.commit()
+
+    return redirect(f"/users/{user.id}")
