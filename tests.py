@@ -5,9 +5,7 @@ os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 from unittest import TestCase
 
 from app import app, db
-from models import User
-
-#DEFAULT_IMAGE_URL
+from models import User, DEFAULT_IMAGE_URL
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -56,6 +54,8 @@ class UserViewTestCase(TestCase):
         db.session.rollback()
 
     def test_list_users(self):
+        """Tests that html and status code for user list is correct"""
+
         with self.client as c:
             resp = c.get("/users")
             self.assertEqual(resp.status_code, 200)
@@ -65,19 +65,50 @@ class UserViewTestCase(TestCase):
 
 
     def test_add_user(self):
+        """Tests that add_user route is a redirect"""
+
         with self.client as c:
-            resp = c.post("/users/new")
+            resp = c.post("/users/new",
+                          data={"first_name": "Mike",
+                                "last_name": "Fred",
+                                "image_url": "test" })
             self.assertEqual(resp.status_code, 302)
 
 
     def test_add_user_redirect(self):
+        """Tests that add_user() redirects properly to the right route, has the
+        correct status code, and contains the expected html"""
+
         with self.client as c:
-            resp = c.post("/users/new", follow_redirects=True,
+            resp = c.post("/users/new",
                           data={"first_name": "Mike",
-                                "last_name": "Fred",
-                                "image_url": "test" })
+                            "last_name": "Fred",
+                            "image_url": "test" },
+                                follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
 
             html = resp.get_data(as_text=True)
             self.assertIn("Delete</button>", html)
             self.assertIn("Mike", html)
+
+
+    def test_show_user(self):
+        """Tests that html and status code for show_user is correct"""
+
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("Edit</a>", html)
+            self.assertIn("For testing user_info", html)
+
+
+    def test_display_edit_form(self):
+        """Tests that html and status code for display_edit_form is correct"""
+
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}/edit")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("Save</button>", html)
+            self.assertIn("Test for Edit Page", html)

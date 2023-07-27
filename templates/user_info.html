@@ -2,14 +2,9 @@
 {% block title %}User Info{% endblock %}
 
 
-
-{% block header %}
-<h1>User Info</h1>
-{% endblock %}
-
-
 {% block content %}
-  <img src="{{ user.image_url }}" alt="Profile Image">
+  <!-- For testing user_info -->
+  <img style="width: 200px; height: auto" class="img-fluid img-thumbnail" src="{{ user.image_url }}" alt="Profile Image">
 
   <h1>{{ user.first_name }} {{ user.last_name }}</h1>
 

@@ -30,7 +30,7 @@ def list_users():
 
 
 @app.get('/users/new')
-def show_add_form():
+def display_add_user_form():
     """Displays form to add a user"""
 
     return render_template("add_user_form.html")
@@ -42,7 +42,8 @@ def add_user():
 
     first_name = request.form.get("first_name")
     last_name = request.form.get("last_name")
-    image_url = request.form.get("image_url")
+    image_url = request.form["image_url"]
+    image_url = image_url if image_url else None
 
     user = User(first_name=first_name,
                 last_name=last_name, image_url=image_url)
@@ -71,6 +72,7 @@ def display_edit_form(user_id):
 @app.post('/users/<int:user_id>/edit')
 def process_edits(user_id):
     """Process edits on edit form and return user to users page"""
+
     user = User.query.get_or_404(user_id)
 
     user.first_name = request.form['first_name']
@@ -85,6 +87,7 @@ def process_edits(user_id):
 @app.post('/users/<int:user_id>/delete')
 def delete_user(user_id):
     """Delete's the user being displayed"""
+
     user = User.query.get_or_404(user_id)
 
     db.session.delete(user)
