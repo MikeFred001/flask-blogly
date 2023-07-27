@@ -30,8 +30,8 @@ class UserViewTestCase(TestCase):
         # As you add more models later in the exercise, you'll want to delete
         # all of their records before each test just as we're doing with the
         # User model below.
-        User.query.delete()
         Post.query.delete()
+        User.query.delete()
 
         self.client = app.test_client()
 
@@ -94,7 +94,8 @@ class UserViewTestCase(TestCase):
 
 
     def test_show_user(self):
-        """Tests that html and status code for show_user is correct"""
+        """Tests that html and status code for test_show_user is correct.
+        Also tests that out-of-range ids return 404"""
 
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}")
@@ -104,9 +105,13 @@ class UserViewTestCase(TestCase):
             self.assertIn("For testing user_info", html)
             self.assertIn("test1_first", html)
 
+            resp2 = c.get("/users/99999999")
+            self.assertEqual(resp2.status_code, 404)
+
 
     def test_display_edit_form(self):
-        """Tests that html and status code for display_edit_form is correct"""
+        """Tests that html and status code for display_edit_form is correct.
+        Also tests that out-of-range ids return 404"""
 
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}/edit")
@@ -116,9 +121,12 @@ class UserViewTestCase(TestCase):
             self.assertIn("Test for Edit Page", html)
             self.assertIn("test1_first", html)
 
+            resp2 = c.get("/users/99999999999/edit")
+            self.assertEqual(resp2.status_code, 404)
+
 
     def test_add_post_form(self):
-        """Tests that html and status code for test_add_post_form is correct.
+        """Tests that html and status code for add_post_form is correct.
         Also tests that out-of-range ids return 404"""
 
         with self.client as c:
@@ -134,15 +142,16 @@ class UserViewTestCase(TestCase):
 
 
     def test_handle_add_post_form(self):
-        """Tests that redirect occurs properly and directs to the proper route"""
+        """Tests that redirect occurs, that it directs to the proper route,
+        and tests that the page displays the expected html"""
 
         with self.client as c:
             resp = c.post(f"/users/{self.user_id}/posts/new",
-                        data={
-                        "post_title": "test title",
-                        "post_content": "test content"
-                        },
-                        follow_redirects=True
+                            data={
+                            "post_title": "test title",
+                            "post_content": "test content"
+                            },
+                            follow_redirects=True
                     )
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
@@ -150,4 +159,36 @@ class UserViewTestCase(TestCase):
             self.assertIn("For testing user_info", html)
             self.assertIn("test title", html)
 
-    # Test failure conditions to make sure 404 works
+
+    def test_display_user_post(self):
+        """Tests that html and status code for display_user_form is correct.
+        Also tests that out-of-range ids return 404"""
+
+        with self.client as c:
+            resp = c.get(f"/posts/{self.post_id}")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("Test for User Post", html)
+            self.assertIn("</i></p>", html)
+            self.assertIn("test_title", html)
+
+            resp2 = c.get("/posts/99999999999")
+            self.assertEqual(resp2.status_code, 404)
+
+
+    def test_handle_edit_post_form(self):
+        """Tests that redirect occurs, that it directs to the proper route,
+        and tests that the page displays the expected html"""
+
+        with self.client as c:
+            resp = c.post(f"/posts/{self.post_id}/edit",
+                        data={
+                        "title": "test edited title",
+                        "content": "test content"
+                        },
+                        follow_redirects=True
+                    )
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("Test for User Post", html)
+            self.assertIn("test edited title", html)

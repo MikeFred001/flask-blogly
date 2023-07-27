@@ -31,14 +31,14 @@ def list_users():
 
     users = User.query.order_by('first_name').all()
 
-    return render_template("list.html", users=users)
+    return render_template("users_list.html", users=users)
 
 
 @app.get('/users/new')
 def display_add_user_form():
     """Displays form to add a user"""
 
-    return render_template("add_user_form.html")
+    return render_template("add_user.html")
 
 
 @app.post('/users/new')
@@ -74,7 +74,7 @@ def display_edit_form(user_id):
     """Display the form to edit a user's info"""
 
     user = User.query.get_or_404(user_id)
-    return render_template("edit_user.html", user=user)
+    return render_template("user_edit_info.html", user=user)
 
 
 @app.post('/users/<int:user_id>/edit')
@@ -110,11 +110,11 @@ def delete_user(user_id):
 
 @app.get('/users/<int:user_id>/posts/new')
 def display_add_post_form(user_id):
-    """Displays add post form to add a post"""
+    """Displays form to add post"""
 
     user = User.query.get_or_404(user_id)
 
-    return render_template("add_post_form.html", user=user)
+    return render_template("user_add_post.html", user=user)
 
 
 @app.post('/users/<int:user_id>/posts/new')
@@ -149,15 +149,14 @@ def display_edit_post_form(post_id):
 
     post = Post.query.get_or_404(post_id)
 
-    return render_template("edit_post.html", post=post)
+    return render_template("user_edit_post.html", post=post)
 
 
 @app.post('/posts/<int:post_id>/edit')
 def handle_edit_post_form(post_id):
-    """Displays form for user to edit post"""
+    """Processes updates made by edit post form"""
 
     post = Post.query.get_or_404(post_id)
-    # user = post.user
 
     post.title = request.form['title']
     post.content = request.form['content']
