@@ -40,8 +40,8 @@ def show_add_form():
 def add_user():
     """Add user and redirect to user list"""
 
-    first_name = request.form["first_name"]
-    last_name = request.form["last_name"]
+    first_name = request.form.get("first_name")
+    last_name = request.form.get("last_name")
     image_url = request.form.get("image_url")
 
     user = User(first_name=first_name,

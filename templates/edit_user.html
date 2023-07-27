@@ -17,8 +17,10 @@
   <label for="image_url">Image URL</label>
   <input id="image_url" value="{{user.image_url}}" name="image_url">
 
-  <button>Save</button>
-  <a class="btn btn-primary" href="/users/{{user.id}}">Cancel</a>
+  <button class="btn btn-success">Save</button>
+  <a class="btn btn-warning" href="/users/{{user.id}}">Cancel</a>
 </form>
+
+<a class="btn btn-primary" href="/users">Home</a>
 {% endblock %}
 <!-- <a class="btn btn-primary" href="/users/{{user.id}}"></a> -->
