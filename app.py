@@ -4,7 +4,7 @@ import os
 
 from flask import Flask, request, render_template, redirect
 from models import connect_db, db, User
-
+#debug toolbar
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL", 'postgresql:///blogly')
@@ -25,7 +25,8 @@ def redirect_to_user_list():
 def list_users():
     """List users and show form to add user"""
 
-    users = User.query.all()
+    users = User.query.order_by('first_name').all()
+
     return render_template("list.html", users=users)
 
 
@@ -42,11 +43,14 @@ def add_user():
 
     first_name = request.form.get("first_name")
     last_name = request.form.get("last_name")
-    image_url = request.form["image_url"]
-    image_url = image_url if image_url else None
+    image_url = request.form["image_url"] or None
 
-    user = User(first_name=first_name,
-                last_name=last_name, image_url=image_url)
+    user = User(
+        first_name=first_name,
+        last_name=last_name,
+        image_url=image_url
+    )
+
     db.session.add(user)
     db.session.commit()
 
@@ -70,7 +74,7 @@ def display_edit_form(user_id):
 
 
 @app.post('/users/<int:user_id>/edit')
-def process_edits(user_id):
+def handle_edit_form(user_id):
     """Process edits on edit form and return user to users page"""
 
     user = User.query.get_or_404(user_id)

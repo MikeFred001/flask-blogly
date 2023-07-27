@@ -64,32 +64,24 @@ class UserViewTestCase(TestCase):
             self.assertIn("test1_last", html)
 
 
-    def test_add_user(self):
-        """Tests that add_user route is a redirect"""
-
-        with self.client as c:
-            resp = c.post("/users/new",
-                          data={"first_name": "Mike",
-                                "last_name": "Fred",
-                                "image_url": "test" })
-            self.assertEqual(resp.status_code, 302)
-
-
     def test_add_user_redirect(self):
         """Tests that add_user() redirects properly to the right route, has the
         correct status code, and contains the expected html"""
 
         with self.client as c:
             resp = c.post("/users/new",
-                          data={"first_name": "Mike",
-                            "last_name": "Fred",
-                            "image_url": "test" },
-                                follow_redirects=True)
+                        data={
+                        "first_name": "Mike",
+                        "last_name": "Fred",
+                        "image_url": "test"
+                        },
+                        follow_redirects=True
+                    )
             self.assertEqual(resp.status_code, 200)
-
             html = resp.get_data(as_text=True)
             self.assertIn("Delete</button>", html)
             self.assertIn("Mike", html)
+            self.assertIn("For testing user_info", html)
 
 
     def test_show_user(self):
@@ -101,6 +93,7 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("Edit</a>", html)
             self.assertIn("For testing user_info", html)
+            self.assertIn("test1_first", html)
 
 
     def test_display_edit_form(self):
@@ -112,3 +105,8 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("Save</button>", html)
             self.assertIn("Test for Edit Page", html)
+            self.assertIn("test1_first", html)
+
+
+
+    # Test failure conditions to make sure 404 works
