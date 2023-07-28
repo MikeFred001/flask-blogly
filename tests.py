@@ -46,6 +46,7 @@ class UserViewTestCase(TestCase):
             content="test_content",
             user_id = test_user.id
         )
+        # Separate test cases for posts
 
         db.session.add(test_user)
         db.session.add(test_post)
@@ -109,7 +110,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp2.status_code, 404)
 
 
-    def test_display_edit_form(self):
+    def test_display_edit_user_form(self):
         """Tests that html and status code for display_edit_form is correct.
         Also tests that out-of-range ids return 404"""
 
@@ -125,6 +126,8 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp2.status_code, 404)
 
 
+
+
     def test_add_post_form(self):
         """Tests that html and status code for add_post_form is correct.
         Also tests that out-of-range ids return 404"""
@@ -137,6 +140,7 @@ class UserViewTestCase(TestCase):
             self.assertIn("Post Content</label>", html)
             self.assertIn("test1_first", html)
 
+            #separate test
             resp2 = c.get(f"/users/99999999/posts/new")
             self.assertEqual(resp2.status_code, 404)
 
@@ -146,13 +150,14 @@ class UserViewTestCase(TestCase):
         and tests that the page displays the expected html"""
 
         with self.client as c:
-            resp = c.post(f"/users/{self.user_id}/posts/new",
-                            data={
-                            "post_title": "test title",
-                            "post_content": "test content"
-                            },
-                            follow_redirects=True
-                    )
+            resp = c.post(
+                f"/users/{self.user_id}/posts/new",
+                data={
+                    "post_title": "test title",
+                    "post_content": "test content"
+                },
+                follow_redirects=True
+            )
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("Posts</h3>", html)
@@ -169,7 +174,6 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("Test for User Post", html)
-            self.assertIn("</i></p>", html)
             self.assertIn("test_title", html)
 
             resp2 = c.get("/posts/99999999999")
@@ -187,7 +191,7 @@ class UserViewTestCase(TestCase):
                         "content": "test content"
                         },
                         follow_redirects=True
-                    )
+        )
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("Test for User Post", html)

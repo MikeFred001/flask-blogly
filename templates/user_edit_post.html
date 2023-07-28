@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 {% block title%}Edit Post{% endblock %}
 
-{% block header %}
-  <h1>Edit Post</h1>
-{% endblock %}
-
 {% block content%}
+  <h1>Edit Post</h1>
   <!-- Test for Edit Page -->
   <form method="POST" action="/posts/{{post.id}}/edit">
 
@@ -13,7 +10,7 @@
     <input id="title" value="{{post.title}}" name="title">
 
     <label for="content">Post Content</label>
-    <input id="content" value="{{post.content}}" name="content">
+    <textarea id="content" value="{{post.content}}" name="content"></textarea>
 
     <button class="btn btn-success">Save</button>
     <a class="btn btn-warning" href="/posts/{{post.id}}">Cancel</a>

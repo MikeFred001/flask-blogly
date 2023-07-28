@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 {% block title%}Create a user{% endblock %}
 
-{% block header %}
-  <h1>Add post for {{user.first_name}} {{user.last_name}}</h1>
-{% endblock %}
-
 {% block content%}
-<form method="POST" action="/users/{{user.id}}/posts/new">
-  <!-- Test for add post form -->
+  <h1>Add post for {{user.first_name}} {{user.last_name}}</h1>
 
-  <label for="post_title">Title</label>
-  <input id="post_title" name="post_title">
+  <form method="POST" action="/users/{{user.id}}/posts/new">
+    <!-- Test for add post form -->
 
-  <label for="post_content">Post Content</label>
-  <input id="post_content" name="post_content">
+    <label for="post_title">Title</label>
+    <input id="post_title" name="post_title">
+
+    <label for="post_content">Post Content</label>
+    <textarea id="post_content" rows="5" name="post_content"></textarea>
+
+    <!-- Textarea for content blocks -->
 
 
-  <button class="btn btn-primary"><a>Add</a></button>
+    <button class="btn btn-primary"><a>Add</a></button>
 
-  <a class="btn btn-primary" href="/users/{{user.id}}">Cancel</a>
-</form>
+    <a class="btn btn-primary" href="/users/{{user.id}}">Cancel</a>
+  </form>
 {% endblock %}

@@ -3,7 +3,7 @@
 import os
 
 from flask import Flask, request, render_template, redirect
-from models import connect_db, db, User, Post
+from models import connect_db, db, User, Post, Tag, PostTag
 from flask_debugtoolbar import DebugToolbarExtension
 
 
@@ -17,6 +17,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 debug = DebugToolbarExtension(app)
+
 
 @app.get('/')
 def redirect_to_user_list():
@@ -94,16 +95,15 @@ def handle_edit_form(user_id):
 
 @app.post('/users/<int:user_id>/delete')
 def delete_user(user_id):
-    """Delete's the user being displayed"""
+    """Delete's the user being displayed and redirects to users page"""
 
     user = User.query.get_or_404(user_id)
 
+    db.session.delete(user.posts)
     db.session.delete(user)
     db.session.commit()
 
     return redirect('/users')
-
-
 
 
 ############################## User Post Routes ################################
@@ -120,6 +120,8 @@ def display_add_post_form(user_id):
 @app.post('/users/<int:user_id>/posts/new')
 def handle_add_post_form(user_id):
     """Handle form to add a post"""
+    # Include note for redirect
+
     user = User.query.get_or_404(user_id)
 
     new_post = Post(
@@ -155,7 +157,7 @@ def display_edit_post_form(post_id):
 @app.post('/posts/<int:post_id>/edit')
 def handle_edit_post_form(post_id):
     """Processes updates made by edit post form"""
-
+    # Include note for redirect
     post = Post.query.get_or_404(post_id)
 
     post.title = request.form['title']
